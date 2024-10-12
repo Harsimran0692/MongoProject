@@ -24,3 +24,37 @@ export const fetch = async (req, res) => {
         return res.status(500).json({ error: "Internal Server Error" });
     }
 };
+
+export const updateUser = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const userExist = await userModel.findOne({_id: id})
+
+        if(!userExist){
+            return res.status(404).json({message: "User not Found"});
+        }
+        const updateUser = await userModel.findByIdAndUpdate(id, req.body, {new: true});
+        res.status(201).json({message: "Data updated Successfully", updateUser})
+        // updateUser.save();
+    } catch (error) {
+        res.status(500).json({error: "Internal Server Error"})
+    }
+}
+
+export const deleteUser = async (req, res) => {
+    try {
+
+        const id = req.params.id;
+        const userExist = await userModel.findOne({_id: id});
+
+        if(!userExist){
+            return res.status(404).json({message: "User not Found"});
+        }
+
+        const deleteUser = await userModel.findByIdAndDelete(id);
+        res.status(201).json({message: "User deleted Successfuly"}, deleteUser);
+        
+    } catch (error) {
+        res.status(500).json({error: "Internal Server Error"})
+    }
+}
